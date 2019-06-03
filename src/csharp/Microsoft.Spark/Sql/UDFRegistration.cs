@@ -240,6 +240,18 @@ namespace Microsoft.Spark.Sql
         /// <param name="func">Wrapped UDF function</param>
         private void Register<TResult>(string name, Delegate func)
         {
+            Register<TResult>(name, func, UdfUtils.PythonEvalType.SQL_BATCHED_UDF);
+        }
+
+        /// <summary>
+        /// Helper function to register wrapped udf.
+        /// </summary>
+        /// <typeparam name="TResult">Return type of the udf</typeparam>
+        /// <param name="name">Name of the udf</param>
+        /// <param name="func">Wrapped UDF function</param>
+        /// <param name="evalType">The EvalType of the function.</param>
+        internal void Register<TResult>(string name, Delegate func, UdfUtils.PythonEvalType evalType)
+        {
             byte[] command = CommandSerDe.Serialize(
                 func,
                 CommandSerDe.SerializedMode.Row,
@@ -254,7 +266,7 @@ namespace Microsoft.Spark.Sql
                     name,
                     pythonFunction,
                     GetDataType<TResult>(),
-                    (int)UdfUtils.PythonEvalType.SQL_BATCHED_UDF,
+                    (int)evalType,
                     true // udfDeterministic
                     ));
 
