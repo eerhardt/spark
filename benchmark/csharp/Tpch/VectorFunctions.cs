@@ -59,6 +59,32 @@ namespace Tpch
                 offset: 0);
         }
 
+        internal static StringArray GetYear(StringArray dates)
+        {
+            if (dates.NullCount > 0)
+            {
+                throw new ArgumentException("Dates cannot have null values.", nameof(dates));
+            }
+
+            int length = dates.Length;
+            var valueOffsets = new ArrowBuffer.Builder<int>();
+            var valueBuffer = new ArrowBuffer.Builder<byte>();
+            var offset = 0;
+
+            for (int i = 0; i < length; ++i)
+            {
+                valueOffsets.Append(offset);
+                valueBuffer.Append(dates.GetBytes(i).Slice(0, 4));
+                offset += 4;
+            }
+
+            return new StringArray(
+                length,
+                valueOffsets.Build(),
+                valueBuffer.Build(),
+                nullBitmapBuffer: ArrowBuffer.Empty);
+        }
+
         private static readonly byte[] s_brazilUtf8 = Encoding.UTF8.GetBytes("BRAZIL");
 
         internal static DoubleArray IsBrazil(StringArray names, DoubleArray volumes)

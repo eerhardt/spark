@@ -228,13 +228,10 @@ namespace Tpch
 
         internal void Q8v()
         {
-    //        Func<Column, Column> getYear = VectorUdf<StringArray, StringArray>(
-    //x => VectorFunctions.GetYear(x));
-
-            Func<Column, Column> getYear = Udf<string, string>(x => x.Substring(0, 4));
+            Func<Column, Column> getYear = VectorUdf<StringArray, StringArray>(
+                x => VectorFunctions.GetYear(x));
             Func<Column, Column, Column> discPrice = VectorUdf<DoubleArray, DoubleArray, DoubleArray>(
                 (price, discount) => VectorFunctions.ComputeDiscountPrice(price, discount));
-
             Func<Column, Column, Column> isBrazil = VectorUdf<StringArray, DoubleArray, DoubleArray>(
                 (x, y) => VectorFunctions.IsBrazil(x, y));
 
