@@ -149,8 +149,9 @@ namespace Microsoft.Spark.E2ETest.IpcTests
 
             // Register UDF
             {
+                _df.CreateOrReplaceTempView("people");
                 _spark.Udf().RegisterVector("udf1", udf1Func);
-                Row[] rows = _spark.Sql("SELECT udf1(age, name)) FROM people")
+                Row[] rows = _spark.Sql("SELECT udf1(age, name) FROM people")
                     .Collect()
                     .ToArray();
                 Assert.Equal(3, rows.Length);
@@ -158,7 +159,6 @@ namespace Microsoft.Spark.E2ETest.IpcTests
                 Assert.Equal("Andy is 30", rows[1].GetAs<string>(0));
                 Assert.Equal("Justin is 19", rows[2].GetAs<string>(0));
             }
-
         }
 
         /// <summary>
