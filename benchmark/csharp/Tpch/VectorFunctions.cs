@@ -78,6 +78,7 @@ namespace Tpch
                 offset += 4;
             }
 
+            valueOffsets.Append(offset);
             return new StringArray(
                 length,
                 valueOffsets.Build(),
