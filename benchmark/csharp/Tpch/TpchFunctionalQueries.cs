@@ -228,11 +228,15 @@ namespace Tpch
 
         internal void Q8v()
         {
+    //        Func<Column, Column> getYear = VectorUdf<StringArray, StringArray>(
+    //x => VectorFunctions.GetYear(x));
+
             Func<Column, Column> getYear = Udf<string, string>(x => x.Substring(0, 4));
             Func<Column, Column, Column> discPrice = VectorUdf<DoubleArray, DoubleArray, DoubleArray>(
                 (price, discount) => VectorFunctions.ComputeDiscountPrice(price, discount));
 
-            Func<Column, Column, Column> isBrazil = Udf<string, double, double>((x, y) => x == "BRAZIL" ? y : 0);
+            Func<Column, Column, Column> isBrazil = VectorUdf<StringArray, DoubleArray, DoubleArray>(
+                (x, y) => VectorFunctions.IsBrazil(x, y));
 
             DataFrame fregion = _region.Filter(Col("r_name") == "AMERICA");
             DataFrame forder = _orders.Filter(Col("o_orderdate") <= "1996-12-31" & Col("o_orderdate") >= "1995-01-01");
